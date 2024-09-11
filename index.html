@@ -1,0 +1,75 @@
+<form onsubmit="return false;">
+	<fieldset>
+		<label for="urlInp">URL:</label>
+		<input id="urlInp" placeholder="https://..." type="text" />
+	</fieldset>
+	<fieldset>
+
+		<label for="textInp">HTML / copypaste text:</label>
+		<textarea id="textInp"></textarea>
+	</fieldset>
+
+	<input type="submit" id="submit" value="Update" />
+	<input type="reset" value="Reset" />
+</form>
+
+<div id="links"></div>
+
+
+<script type="module" src="linker.js"></script>
+<script type="module">
+	import { linker } from './linker.js';
+	async function update() {
+		const url = document.getElementById('urlInp').value.trim();
+		const text = document.getElementById('textInp').value.trim();
+
+		const _getHTML = _ => {
+			if (url && url.length > 0)
+				return linker({url});
+			else
+				return linker({text});
+		};
+		const html = await _getHTML();
+		let error = '';
+		if (html.length == 0) {
+			error+= '<p>No codes found</p>'
+			if (url && url.length > 0) {
+				error+= '<p>Try copypasting the text!</p>'
+			}
+		}
+		console.log(document.getElementById('links'));
+		document.getElementById('links').innerHTML = `<h1>Links</h1> ${html} ${error}`
+		return false;
+	}
+	document.getElementById('submit').onclick=update
+</script>
+
+
+
+<style>
+	label {
+		display: block;
+	}
+
+	#textInp,
+	#urlInp {
+		font-family: monospace;
+		line-height: 1;
+		max-width: 1024px;
+		width: 95vw;
+	}
+	#textInp {
+		height: 15em;
+	}
+
+	#links {
+		font-family: Arial, Helvetica, sans-serif;
+	}
+
+	#links a:not(:visited) {
+		color: red;
+	}
+	
+</style>
+
+
